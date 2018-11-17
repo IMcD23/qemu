@@ -140,7 +140,11 @@ typedef enum {
 
 static inline void flush_icache_range(uintptr_t start, uintptr_t stop)
 {
+    #if defined(__APPLE__)
+
+    #else
     __builtin___clear_cache((char *)start, (char *)stop);
+    #endif
 }
 
 void tb_target_set_jmp_target(uintptr_t, uintptr_t, uintptr_t);
