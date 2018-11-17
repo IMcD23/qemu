@@ -46,9 +46,11 @@
 #include <IOKit/IOBSD.h>
 #include <IOKit/storage/IOMediaBSDClient.h>
 #include <IOKit/storage/IOMedia.h>
+#if __has_include(<IOKit/storage/IOCDMedia.h>)
 #include <IOKit/storage/IOCDMedia.h>
 //#include <IOKit/storage/IOCDTypes.h>
 #include <IOKit/storage/IODVDMedia.h>
+#endif
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
@@ -2762,7 +2764,7 @@ BlockDriver bdrv_file = {
 /***********************************************/
 /* host device */
 
-#if defined(__APPLE__) && defined(__MACH__)
+#if defined(__APPLE__) && defined(__MACH__) && __has_include(<IOKit/storage/IOCDMedia.h>)
 static kern_return_t GetBSDPath(io_iterator_t mediaIterator, char *bsdPath,
                                 CFIndex maxPathSize, int flags);
 static char *FindEjectableOpticalMedia(io_iterator_t *mediaIterator)
@@ -2970,7 +2972,7 @@ static int hdev_open(BlockDriverState *bs, QDict *options, int flags,
     Error *local_err = NULL;
     int ret;
 
-#if defined(__APPLE__) && defined(__MACH__)
+#if defined(__APPLE__) && defined(__MACH__) && __has_include(<IOKit/storage/IOCDMedia.h>)
     /*
      * Caution: while qdict_get_str() is fine, getting non-string types
      * would require more care.  When @options come from -blockdev or
@@ -3035,7 +3037,7 @@ hdev_open_Mac_error:
     ret = raw_open_common(bs, options, flags, 0, true, &local_err);
     if (ret < 0) {
         error_propagate(errp, local_err);
-#if defined(__APPLE__) && defined(__MACH__)
+#if defined(__APPLE__) && defined(__MACH__) && __has_include(<IOKit/storage/IOCDMedia.h>)
         if (*bsd_path) {
             filename = bsd_path;
         }
