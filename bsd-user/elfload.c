@@ -710,7 +710,7 @@ static void set_brk(abi_ulong start, abi_ulong end)
                 return;
         if(target_mmap(start, end - start,
                        PROT_READ | PROT_WRITE | PROT_EXEC,
-                       MAP_FIXED | MAP_PRIVATE | MAP_ANON, -1, 0) == -1) {
+                       MAP_FIXED | MAP_PRIVATE | MAP_ANON | MAP_JIT, -1, 0) == -1) {
             perror("cannot mmap brk");
             exit(-1);
         }
@@ -739,7 +739,7 @@ static void padzero(abi_ulong elf_bss, abi_ulong last_bss)
             if (end_addr1 < end_addr) {
                 mmap((void *)g2h(end_addr1), end_addr - end_addr1,
                      PROT_READ|PROT_WRITE|PROT_EXEC,
-                     MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
+                     MAP_FIXED|MAP_PRIVATE|MAP_ANON|MAP_JIT, -1, 0);
             }
         }
 
@@ -928,6 +928,7 @@ static abi_ulong load_elf_interp(struct elfhdr * interp_elf_ex,
             if (eppnt->p_flags & PF_X) elf_prot |= PROT_EXEC;
             if (interp_elf_ex->e_type == ET_EXEC || load_addr_set) {
                 elf_type |= MAP_FIXED;
+                elf_type |= MAP_JIT;
                 vaddr = eppnt->p_vaddr;
             }
             error = target_mmap(load_addr+TARGET_ELF_PAGESTART(vaddr),
@@ -981,7 +982,7 @@ static abi_ulong load_elf_interp(struct elfhdr * interp_elf_ex,
         if (last_bss > elf_bss) {
             target_mmap(elf_bss, last_bss-elf_bss,
                         PROT_READ|PROT_WRITE|PROT_EXEC,
-                        MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
+                        MAP_FIXED|MAP_PRIVATE|MAP_ANON|MAP_JIT, -1, 0);
         }
         free(elf_phdata);
 
@@ -1404,7 +1405,7 @@ int load_elf_binary(struct linux_binprm * bprm, struct target_pt_regs * regs,
         if (elf_ppnt->p_flags & PF_R) elf_prot |= PROT_READ;
         if (elf_ppnt->p_flags & PF_W) elf_prot |= PROT_WRITE;
         if (elf_ppnt->p_flags & PF_X) elf_prot |= PROT_EXEC;
-        elf_flags = MAP_PRIVATE | MAP_DENYWRITE;
+        elf_flags = MAP_PRIVATE | MAP_DENYWRITE | MAP_JIT;
         if (elf_ex.e_type == ET_EXEC || load_addr_set) {
             elf_flags |= MAP_FIXED;
         } else if (elf_ex.e_type == ET_DYN) {
@@ -1545,7 +1546,7 @@ int load_elf_binary(struct linux_binprm * bprm, struct target_pt_regs * regs,
                Since we do not have the power to recompile these, we
                emulate the SVr4 behavior.  Sigh.  */
             target_mmap(0, qemu_host_page_size, PROT_READ | PROT_EXEC,
-                                      MAP_FIXED | MAP_PRIVATE, -1, 0);
+                                      MAP_FIXED | MAP_PRIVATE | MAP_JIT, -1, 0);
     }
 
     info->entry = elf_entry;
