@@ -101,7 +101,7 @@ int qemu_mprotect_rwx(void *addr, size_t size)
 #ifdef _WIN32
     return qemu_mprotect__osdep(addr, size, PAGE_EXECUTE_READWRITE);
 #else
-    return qemu_mprotect__osdep(addr, size, PROT_READ | PROT_WRITE | PROT_EXEC);
+    return qemu_mprotect__osdep(addr, size, PROT_READ | PROT_WRITE | PROT_EXEC | PROT_JIT);
 #endif
 }
 

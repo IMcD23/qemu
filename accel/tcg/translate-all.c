@@ -897,7 +897,7 @@ static void page_lock_pair(PageDesc **ret_p1, tb_page_addr_t phys1,
    user mode. It will change when a dedicated libc will be used.  */
 /* ??? 64-bit hosts ought to have no problem mmaping data outside the
    region in which the guest needs to run.  Revisit this.  */
-#define USE_STATIC_CODE_GEN_BUFFER
+// #define USE_STATIC_CODE_GEN_BUFFER
 #endif
 
 /* Minimum size of the code gen buffer.  This number is randomly chosen,
@@ -1114,7 +1114,7 @@ static inline void code_gen_alloc(size_t tb_size)
     tcg_ctx->code_gen_buffer_size = size_code_gen_buffer(tb_size);
     tcg_ctx->code_gen_buffer = alloc_code_gen_buffer();
     if (tcg_ctx->code_gen_buffer == NULL) {
-        fprintf(stderr, "Could not allocate dynamic translator buffer\n");
+        fprintf(stderr, "Could not allocate dynamic translator buffer of size %zd\n", tcg_ctx->code_gen_buffer_size);
         exit(1);
     }
 }
