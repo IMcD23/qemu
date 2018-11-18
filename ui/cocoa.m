@@ -1550,7 +1550,6 @@ QemuCocoaView *cocoaView;
 
 int main (int argc, const char * argv[]) {
 
-#if APPKIT
     gArgc = argc;
     gArgv = (char **)argv;
     int i;
@@ -1576,6 +1575,7 @@ int main (int argc, const char * argv[]) {
         }
     }
 
+#if APPKIT
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
     // Pull this console process up to being a fully-fledged graphical
