@@ -4944,6 +4944,8 @@ if test "$coroutine" = ""; then
     coroutine=win32
   elif test "$ucontext_works" = "yes"; then
     coroutine=ucontext
+  elif test "$darwin" = "yes"; then
+    coroutine=darwin
   else
     coroutine=sigaltstack
   fi
@@ -4966,6 +4968,8 @@ else
     if test "$mingw32" = "yes"; then
       error_exit "only the 'windows' coroutine backend is valid for Windows"
     fi
+    ;;
+  darwin)
     ;;
   *)
     error_exit "unknown coroutine backend $coroutine"

@@ -1032,7 +1032,7 @@ static inline void *alloc_code_gen_buffer(void)
 static inline void *alloc_code_gen_buffer(void)
 {
     int prot = PROT_WRITE | PROT_READ | PROT_EXEC;
-    int flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_JIT;
+    int flags = MAP_PRIVATE | MAP_ANONYMOUS;
     uintptr_t start = 0;
     size_t size = tcg_ctx->code_gen_buffer_size;
     void *buf;

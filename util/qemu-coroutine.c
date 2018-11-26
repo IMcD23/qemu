@@ -161,7 +161,8 @@ void qemu_aio_coroutine_enter(AioContext *ctx, Coroutine *co)
             coroutine_delete(to);
             break;
         default:
-            abort();
+                break;
+//            abort();
         }
     }
 }
